@@ -17,6 +17,7 @@ Do special requests correlate with higher ADR or lower cancellation?
 Are there patterns in assigned vs. requested room types?
     Do these lead to cancellation?
 Are stays during weekends or weekdays longer in Resort hotels compared to City hotels? 
+What proportion of hotel bookings come from repeat guests, and how do their cancellation rates compare?
 
 
  ⏰ 2. TimeBased Analysis
