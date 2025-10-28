@@ -115,7 +115,8 @@ htb = htb.drop_duplicates()
 # Print no of duplicates after deleting them
 print(f'Number of duplicates after removal: {htb.duplicated().sum()}')
 ```
----
+
+
 ## 🎯 Analysis Areas
 
 This analysis focused on five key areas:
@@ -132,7 +133,7 @@ This analysis focused on five key areas:
 
 All questions for analysis can be found in the [Hotel Booking Questions Notebook](questions.txt)
 
----
+
 ## 📊 The Analysis Findings
 
 ### 📝 Exploratory Data Analysis - Bookings, Arrivals, Stays
@@ -212,23 +213,52 @@ The Average Daily Rate (ADR) over the years has positively trended upwards from 
 
 The ADR during weekends is almost similar to weekdays, with weekends slightly higher. This suggests that pricing strategies are consistent across the week.
 
-Looking at Cancellation over the years, 
-
+In cancellation trends, 2014 shows the highest cancellation rate with about 70% of reservations. By volume, 2016 recorded the most cancellations (over 10,000), with the cancellation rate falling by about 1.7% in 2017(27.8%) versus 2016(29.42%).
 
 ---
 ### 👥 Guest Profile
 Notebook Link: [Guest Profile Analysis](3_Guest_Profile.ipynb)
 
+From all reservations, the average number of guests per booking is 2. A total of 176,997 guests were booked for stay including adults, children and babies. However, only 125,223 (70.75%) of them actually arrived for their stay, indicating a no-show (1,888 guests) and cancellation (49,876 guests) impact of 29.25%.
+
+There were more guests in the city hotel, with 107,685 guests booked, but only 73,887 (68.60%) arrived consisting of 69,004 adults, 4,545 children and 328 babies.
+
+In contrast, the resort hotel had less guests booked  (69,312) with a slightly higher arrival rate of 74.09% (51,356 guests).
+
+```python
+# Guest type distribution analysis
+# Get guest data and Filter only guests that actually arrived (Check-Out)
+guest_htb = htb[htb['reservation_status'] == 'Check-Out'][['hotel', 'adults', 'children', 'babies']]
+
+# Unpivot guest data to long format for easy analysis
+guest_count = guest_htb.melt(id_vars = 'hotel', value_vars=['adults', 'children', 'babies'], value_name='guest_count', var_name='guest_type')
+
+# Get total guest count per type and hotel
+hotel_guest_count = guest_count.groupby(['hotel', 'guest_type'])['guest_count'].sum().reset_index()
+
+# Divide guest count by total arrived guest, xply by 100 and round to 2dp to get percentage of guest type per hotel
+hotel_guest_count['guest_pct%'] = ((hotel_guest_count['guest_count'] / arrived_guest) * 100).round(2)
+
+hotel_guest_count
+```
+Majority of guest across both hotels are first time visitors, accounting for 96.14% of all bookings. Repeated guests make up only 3.86% of bookings and have a significantly lower cancellation rate (7.73%) compared to new guests (28.32%), indicating that loyalty reduces cancellation likelihood.
+
+Among customer types, 'Transient' guests bookings have the highest cancellation rate at 30.14%, while 'Group' bookings have the lowest at 9.8%, suggesting that group reservations are less prone to cancellations.
+
+The Bed & Breakfast (BB) meal plan is the most popular choice among guests, reflecting a general preference for basic meal options. However, preferences differ between hotels: guests at the City Hotel tend to choose Self-Catering (SC) as their second most common option, while those at the Resort Hotel favor Half-Board (HB) as the next preferred choice. This suggests that City Hotel guests may prefer more flexibility in meals, whereas Resort Hotel guests lean toward convenience and inclusive dining experiences.
+
+Similar to the overall booking pattern, guests from European countries, particularly Portugal, the United Kingdom, France, Germany, and Spain account for the highest accumulated length of stay. Portugal and the United Kingdom lead with the longest total stay durations, highlighting their strong market presence and consistent contribution to hotel occupancy.
+Interestingly, guests from smaller markets such as Togo, Guinea-Bissau, the Bahamas, Palau, and Sierra Leone recorded some of the longest average stays, often exceeding seven nights per visit. This suggests that while their booking volume is relatively low, these markets represent valuable long-stay segments that could be strategically targeted for retention or loyalty programs.
+
+Looking at the deposit behaviour of guest, while a very few donot mind making a non refundable deposit, majority prefer to not make a deposit at all. This is common across both hotel types. Naturally, one would infer that guest who make non-refundable deposits are less likely to cancel their bookings, but they have the highest cancellation rate compared to other deposit types, suggesting that other factors influence cancellation decisions beyond deposit.
+
+---
 ### 🔗 Booking Channels & Market Segments
+Notebook Link: [Booking Channels & Market Segments Analysis](4_Booking_Channels_and_Market_Segments.ipynb)
 
-
-### 💰 Revenue & Performance
 
 
 ---
-
-## 💡 Recommendations
-
 
 ## ✍️ Author
 
